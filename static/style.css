@@ -1,0 +1,41 @@
+@font-face{
+  font-family: val;
+  src: url('Valorax-lg25V.otf');
+  font-weight: bold;}
+@font-face{
+    font-family: roll;
+    src: url('Rollbox-ExtraBold.ttf');
+    font-weight: bold;}
+@font-face{
+  font-family: trial;
+  src: url('SPACE-JAEGER-BF63cbc89ccf78c.otf');
+  font-weight: bold;}
+  body {font-family: roll; color:#ccedf5}
+  h1 {font-family:val; color: white; font-size: 5em;}
+  h2 {font-family:trial; color: white; font-size: 1.8em;}
+.myprogress {
+  height: 100% !important;
+  font-size: 2em;
+  background-color: red;
+  }
+.space-border {
+  border: solid 4px #2B8399;
+  }
+.space-header {
+  background-color: #0D5266;
+}
+.system {
+  font-size: 2.8em;
+  }
+.dash {
+  background-color: #0A3647;
+}
+.progress-danger {
+  background-color: red;
+}
+.progress-ok {
+  background-color:#36A7C2;
+}
+.config-row {
+  height:120px
+}

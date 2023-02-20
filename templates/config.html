@@ -1,0 +1,64 @@
+{% extends "base.html" %} {% block title %}Station Dashboard{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col">
+    <div class="d-flex flex-column vh-100 m-2">
+      <div class="row space-border space-header mb-4">
+        <div class="col-8">
+          <div class="row">
+            <div class="col"><h1>S.I.M.O.N</h1></div>
+          </div>
+          <div class="row">
+            <div class=""><h2>Space Integration Management Orbital Node</h2></div>
+          </div>
+        </div>
+        <div class="col-4 p-0">
+          <div><img src="../static/images/test.png" width="100%"></div>
+        </div>
+    </div>
+    <form action="#" method="post">
+      <div class="row config-row mb-4">
+      <div class="col-3"><button type="submit" value="start" name="start" id="start" class="btn btn-dark w-100 h-100">Start</button></div>
+      <div class="col-3"><button type="submit" value="stop" name="stop" id="stop" class="btn btn-dark w-100 h-100">Stop</button></div>
+      <div class="col-3" ><button style="color:aquamarine; font-size:2.4em" type="button" class="btn w-100 h-100">{{counter}}</button></div>
+
+    </div>
+    <div class="row config-row mb-4">
+      <div class="col-3"><button type="submit" value="life" name="decrement" class="btn btn-warning w-100 h-100"> -15 Life</button></div>
+      <div class="col-3"><button type="submit" value="comms" name="decrement" class="btn btn-warning w-100 h-100"> -15 Comms</button></div>
+      <div class="col-3"><button type="submit" value="shields" name="decrement" class="btn btn-warning w-100 h-100"> -15 Shields</button></div>
+      <div class="col-3"><button type="submit" value="hydro" name="decrement" class="btn btn-warning w-100 h-100"> -15 Hydro</button></div>
+    </div>
+    <div class="row config-row mb-4">
+      <div class="col-3"><button type="submit" value="life" name="increment" class="btn btn-primary w-100 h-100"> +15 Life</button></div>
+      <div class="col-3"><button type="submit" value="comms" name="increment" class="btn btn-primary w-100 h-100"> +15 Comms</button></div>
+      <div class="col-3"><button type="submit" value="shields" name="increment" class="btn btn-primary w-100 h-100"> +15 Shields</button></div>
+      <div class="col-3"><button type="submit" value="hydro" name="increment" class="btn btn-primary w-100 h-100"> +15 Hydro</button></div>
+    </div>
+    <div class="row config-row">
+      {% if life == 0 %}
+      <div class="col-3"><button type="submit" value="life" name="restore" class="btn btn-info w-100 h-100">Restore</button></div>
+      {% else %}
+      <div class="col-3"><button type="submit" value="life" name="sabotage" class="btn btn-danger w-100 h-100">Accident</button></div>
+      {% endif %}
+      {% if comms == 0 %}
+      <div class="col-3"><button type="submit" value="comms" name="restore" class="btn btn-info w-100 h-100">Restore</button></div>
+      {% else %}
+      <div class="col-3"><button type="submit" value="comms" name="sabotage" class="btn btn-danger w-100 h-100">Sabotage</button></div>
+      {% endif %}
+      {% if shields == 0 %}
+      <div class="col-3"><button type="submit" value="shields" name="restore" class="btn btn-info w-100 h-100">Restore</button></div>
+      {% else %}
+      <div class="col-3"><button type="submit" value="shields" name="sabotage" class="btn btn-danger w-100 h-100">Malfunction</button></div>
+      {% endif %}
+      {% if hydro == 0 %}
+      <div class="col-3"><button type="submit" value="hydro" name="restore" class="btn btn-info w-100 h-100">Restore</button></div>
+      {% else %}
+      <div class="col-3"><button type="submit" value="hydro" name="sabotage" class="btn btn-danger w-100 h-100">Infection</button></div>
+      {% endif %}
+
+    </div>
+  </form>
+  </div>
+</div>
+{% endblock %}

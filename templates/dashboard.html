@@ -1,0 +1,136 @@
+{% extends "base.html" %} {% block title %}Station Dashboard{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col">
+    <div class="d-flex flex-column vh-100 m-2">
+      <div class="row space-border space-header mb-4">
+        <div class="col-8">
+          <div class="row">
+            <div class="col"><h1>S.I.M.O.N</h1></div>
+          </div>
+          <div class="row">
+            <div class=""><h2>Space Integration Management Orbital Node</h2></div>
+          </div>
+        </div>
+        <div class="col-4 p-0">
+          <div><img src="../static/images/test.png" width="100%"></div>
+        </div>
+      </div>
+      <div class="row h-25 mb-4 gx-0 d-flex align-items-center">
+        <div class="system col-3 m-3">LIFE SUPPORT</div>
+        <div class="progress mb-2 myprogress space-border col-8">
+
+          <div class="progress-bar progress-ok progress-bar-striped progress-bar-animated" id="life"  role="progressbar" aria-label="Example with label" style="width: 100%;"
+            aria-valuenow="{{life}}" aria-valuemin="0" aria-valuemax="100">{{life}}%</div>
+
+        </div>
+      </div>
+      <div class="row h-25 mb-4 gx-0 d-flex align-items-center">
+        <div class="system col-3 m-3">COMMS</div>
+        <div class="progress mb-2 myprogress space-border col-8">
+
+          <div class="progress-bar progress-ok progress-bar-striped progress-bar-animated" id="comms"  role="progressbar" aria-label="Example with label" style="width: 100%;"
+            aria-valuenow="{{comms}}" aria-valuemin="0" aria-valuemax="100">{{comms}}%</div>
+
+        </div>
+      </div>
+      <div class="row h-25 mb-4 gx-0 d-flex align-items-center">
+        <div class="system col-3 m-3">SHIELDS</div>
+        <div class="progress mb-2 myprogress space-border col-8">
+
+          <div class="progress-bar progress-ok progress-bar-striped progress-bar-animated" id="shields"  role="progressbar" aria-label="Example with label" style="width: 100%;"
+            aria-valuenow="{{shields}}" aria-valuemin="0" aria-valuemax="100">{{shields}}%</div>
+
+        </div>
+      </div>
+      <div class="row h-25 mb-4 gx-0 d-flex align-items-center">
+        <div class="system col-3 m-3">HYDROPONICS</div>
+        <div class="progress mb-2 myprogress space-border col-8">
+
+          <div class="progress-bar progress-ok progress-bar-striped progress-bar-animated" " id="hydro" role="progressbar" aria-label="Example with label" style="width: 100%;"
+            aria-valuenow="{{hydro}}" aria-valuemin="0" aria-valuemax="100">{{hydro}}%</div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+        function update(){
+            $.get("/update", function(data){
+                var life = data[0].toString()
+                var comms = data[1].toString()
+                var shields = data[2].toString()
+                var hydro = data[3].toString()
+                var lifeEl = document.getElementById("life");
+                var commsEl = document.getElementById("comms");
+                var shieldsEl = document.getElementById("shields");
+                $("#life").html(life + "%")
+                //hydroEl.html(data)
+                console.log(life)
+                lifeEl.style.width = life + "%"
+                /*if (parseInt(life) < 51) {
+                  lifeEl.classList.add("progress-danger")
+                  lifeEl.classList.remove("progress-ok")
+                }
+                else {
+                  lifeEl.classList.add("progress-ok")
+                  lifeEl.classList.remove("progress-danger")
+                }*/
+
+                $("#comms").html(comms + "%")
+                //hydroEl.html(data)
+                console.log(comms)
+                commsEl.style.width = comms + "%"
+                /*if (parseInt(comms) < 51) {
+                  commsEl.classList.add("progress-danger")
+                  commsEl.classList.remove("progress-ok")
+                }
+                else {
+                  commsEl.classList.add("progress-ok")
+                  commsEl.classList.remove("progress-danger")
+                }*/
+
+
+                $("#shields").html(shields + "%")
+                //hydroEl.html(data)
+                console.log(shields)
+                shieldsEl.style.width = shields + "%"
+                /*if (parseInt(shields) < 51) {
+                  shieldsEl.classList.add("progress-danger")
+                  shieldsEl.classList.remove("progress-ok")
+                }
+                else {
+                  shieldsEl.classList.add("progress-ok")
+                  shieldsEl.classList.remove("progress-danger")
+                }*/
+
+
+                var hydroEl = document.getElementById("hydro");
+                $("#hydro").html(hydro + "%")
+                //hydroEl.html(data)
+                console.log(hydro)
+                hydroEl.style.width = hydro + "%"
+                /*if (parseInt(hydro) < 51) {
+                  hydroEl.classList.add("progress-danger")
+                  hydroEl.classList.remove("progress-ok")
+                }
+                else {
+                  hydroEl.classList.add("progress-ok")
+                  hydroEl.classList.remove("progress-danger")
+                }*/
+                //check system value
+                //set progress-bar colour by value
+                //set progress-bar value
+
+            });
+        }
+        update()
+        var intervalId = setInterval(function() {
+            update()
+        }, 5000);
+
+    </script>
+{% endblock %}
