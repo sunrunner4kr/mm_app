@@ -18,32 +18,27 @@ life = 100
 comms = 100
 shields = 100
 hydro = 100
+interval = 2 # minutes
+increment = 5 # percent
 
 
-system = ["life", "comms", "shields", "hydro"]
+runningSystems = ["life", "comms", "shields", "hydro"]
 
 
-def incrementDown():
-    global counter, life, comms, shields, hydro
-    counter = counter + 15
-    # print(randrange(4))
+def processTimer():
+    global counter
+    counter = counter + interval
 
-    systemVal = 0
-    while systemVal == 0:
-        systemName = system[randrange(4)]
-        # print(systemName)
-        # print(globals()[systemName])
-        systemVal = globals()[systemName]
+    systemName = runningSystems[randrange(len(runningSystems)) - 1]
+    decrementSystemsPercent(systemName, increment)
 
-    if systemVal < 15:
-        globals()[systemName] = 0
-    else:
-        globals()[systemName] = globals()[systemName] - 15
-    print("another 15min - " + str(systemName) + ": " + str(globals()[systemName]))
+    print("another " + str(interval) + " min - " + str(systemName) + ": " + str(globals()[systemName]))
+
 
 
 def display(msg):
     print(msg + " " + time.strftime("%H:%M:%S"))
+
 
 
 class RepeatTimer(Timer):
@@ -51,8 +46,9 @@ class RepeatTimer(Timer):
         while not self.finished.wait(self.interval):
             self.function(*self.args, **self.kwargs)
             print(" ")
-            incrementDown()
+            processTimer()
             time.sleep(15)
+
 
 
 def systemsDown():
@@ -63,8 +59,10 @@ def systemsDown():
         return False
 
 
+
 t = RepeatTimer(1, display, ["repeating.."])
 t.daemon = True
+
 
 
 def startTimer(t):
@@ -81,9 +79,11 @@ def startTimer(t):
         t.cancel
 
 
+
 @index_blueprint.route("/", methods=["GET", "POST"])
 def index():
     return redirect(url_for("index.dashboard"))
+
 
 
 @index_blueprint.route("/dashboard", methods=["GET", "POST"])
@@ -101,6 +101,7 @@ def dashboard():
         )
 
 
+
 @index_blueprint.route("/config", methods=["GET", "POST"])
 def config():
     global life, comms, shields, hydro
@@ -111,49 +112,13 @@ def config():
             t.cancel()
 
         elif "decrement" in request.form:
-            if request.form["decrement"] == "life":
-                if life > 14:
-                    life = life - 15
-            elif request.form["decrement"] == "comms":
-                if comms > 14:
-                    comms = comms - 15
-            elif request.form["decrement"] == "shields":
-                if shields > 14:
-                    shields = shields - 15
-            elif request.form["decrement"] == "hydro":
-                if hydro > 14:
-                    hydro = hydro - 15
+            decrementSystemsPercent(request.form["decrement"], increment)
         elif "increment" in request.form:
-            if request.form["increment"] == "life":
-                if life < 86:
-                    life = life + 15
-            elif request.form["increment"] == "comms":
-                if comms < 86:
-                    comms = comms + 15
-            elif request.form["increment"] == "shields":
-                if shields < 86:
-                    shields = shields + 15
-            elif request.form["increment"] == "hydro":
-                if hydro < 86:
-                    hydro = hydro + 15
+            decrementSystemsPercent(request.form["increment"], increment)
         elif "sabotage" in request.form:
-            if request.form["sabotage"] == "life":
-                life = 0
-            elif request.form["sabotage"] == "comms":
-                comms = 0
-            elif request.form["sabotage"] == "shields":
-                shields = 0
-            elif request.form["sabotage"] == "hydro":
-                hydro = 0
+            setSystemsPercent(request.form["sabotage"], 0)
         elif "restore" in request.form:
-            if request.form["restore"] == "life":
-                life = 100
-            elif request.form["restore"] == "comms":
-                comms = 100
-            elif request.form["restore"] == "shields":
-                shields = 100
-            elif request.form["restore"] == "hydro":
-                hydro = 100
+            setSystemsPercent(request.form["restore"], 100)
         return redirect(url_for("index.config"))
     elif request.method == "GET":
         time_format = time.strftime("%H:%M", time.gmtime(counter * 60))
@@ -168,9 +133,60 @@ def config():
         )
 
 
+
 @index_blueprint.get("/update")
 def update():
     global hydro, life, comms, shields
     # total = str(hydro) + "%"  ## replace this with what you want to send
 
     return [str(life), str(comms), str(shields), str(hydro)]
+
+
+
+def incrementSystemsPercent(system: str, additionPercent: int):
+    newPercent = getSystemsPercent(system) + additionPercent
+    if newPercent > 100:
+        setSystemsPercent(system, 100)
+    else:
+        setSystemsPercent(system, newPercent)
+
+
+
+def decrementSystemsPercent(system: str, decrementPercent: int):
+    newPercent = getSystemsPercent(system) - decrementPercent
+    if newPercent < 0:
+        setSystemsPercent(system, 0)
+    else:
+        setSystemsPercent(system, newPercent)
+
+
+
+def getSystemsPercent(system: str):
+    if system == "life":
+        return life
+    elif system == "comms":
+        return comms
+    elif system == "shields":
+        return shields
+    elif system == "hydro":
+        return hydro
+
+
+
+def setSystemsPercent(system: str, newPercent: int):
+    global runningSystems, life, comms, shields, hydro
+
+    # Update the currently running systems
+    if newPercent == 100:
+        runningSystems.append(system)
+    elif newPercent == 0:
+        runningSystems.remove(system)
+
+    if system == "life":
+        life = newPercent
+    elif system == "comms":
+        comms = newPercent
+    elif system == "shields":
+        shields = newPercent
+    elif system == "hydro":
+        hydro = newPercent
