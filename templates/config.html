@@ -24,16 +24,16 @@
 
     </div>
     <div class="row config-row mb-4">
-      <div class="col-3"><button type="submit" value="life" name="decrement" class="btn btn-warning w-100 h-100"> -15 Life</button></div>
-      <div class="col-3"><button type="submit" value="comms" name="decrement" class="btn btn-warning w-100 h-100"> -15 Comms</button></div>
-      <div class="col-3"><button type="submit" value="shields" name="decrement" class="btn btn-warning w-100 h-100"> -15 Shields</button></div>
-      <div class="col-3"><button type="submit" value="hydro" name="decrement" class="btn btn-warning w-100 h-100"> -15 Hydro</button></div>
+      <div class="col-3"><button type="submit" value="life" name="decrement" class="btn btn-warning w-100 h-100"> -{{increment}} Life</button></div>
+      <div class="col-3"><button type="submit" value="comms" name="decrement" class="btn btn-warning w-100 h-100"> -{{increment}} Comms</button></div>
+      <div class="col-3"><button type="submit" value="shields" name="decrement" class="btn btn-warning w-100 h-100"> -{{increment}} Shields</button></div>
+      <div class="col-3"><button type="submit" value="hydro" name="decrement" class="btn btn-warning w-100 h-100"> -{{increment}} Hydro</button></div>
     </div>
     <div class="row config-row mb-4">
-      <div class="col-3"><button type="submit" value="life" name="increment" class="btn btn-primary w-100 h-100"> +15 Life</button></div>
-      <div class="col-3"><button type="submit" value="comms" name="increment" class="btn btn-primary w-100 h-100"> +15 Comms</button></div>
-      <div class="col-3"><button type="submit" value="shields" name="increment" class="btn btn-primary w-100 h-100"> +15 Shields</button></div>
-      <div class="col-3"><button type="submit" value="hydro" name="increment" class="btn btn-primary w-100 h-100"> +15 Hydro</button></div>
+      <div class="col-3"><button type="submit" value="life" name="increment" class="btn btn-primary w-100 h-100"> +{{increment}} Life</button></div>
+      <div class="col-3"><button type="submit" value="comms" name="increment" class="btn btn-primary w-100 h-100"> +{{increment}} Comms</button></div>
+      <div class="col-3"><button type="submit" value="shields" name="increment" class="btn btn-primary w-100 h-100"> +{{increment}} Shields</button></div>
+      <div class="col-3"><button type="submit" value="hydro" name="increment" class="btn btn-primary w-100 h-100"> +{{increment}} Hydro</button></div>
     </div>
     <div class="row config-row">
       {% if life == 0 %}

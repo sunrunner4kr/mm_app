@@ -10,16 +10,18 @@ from threading import Timer
 from flask import current_app as app
 from random import randrange
 import time
+import csv
+import os.path
 
 index_blueprint = Blueprint("index", __name__)
 
-counter = 0
-life = 100
-comms = 100
-shields = 100
-hydro = 100
-interval = 2 # minutes
-increment = 5 # percent
+counter: int = 0
+life: int = 100
+comms: int = 100
+shields: int = 100
+hydro: int = 100
+interval: int = 2 # minutes
+increment: int = 5 # percent
 
 
 runningSystems = ["life", "comms", "shields", "hydro"]
@@ -47,7 +49,11 @@ class RepeatTimer(Timer):
             self.function(*self.args, **self.kwargs)
             print(" ")
             processTimer()
-            time.sleep(15)
+            # How often it runs is set here
+            # time.sleep(interval * 60)
+            # use the above for the final scenario, using below for dev
+            time.sleep(5)
+            
 
 
 
@@ -107,6 +113,7 @@ def config():
     global life, comms, shields, hydro
     if request.method == "POST":
         if "start" in request.form:
+            readFromFile()
             startTimer(t)
         elif "stop" in request.form:
             t.cancel()
@@ -129,6 +136,7 @@ def config():
             comms=comms,
             shields=shields,
             hydro=hydro,
+            increment=increment,
             counter=time_format,
         )
 
@@ -161,7 +169,7 @@ def decrementSystemsPercent(system: str, decrementPercent: int):
 
 
 
-def getSystemsPercent(system: str):
+def getSystemsPercent(system: str) -> int:
     if system == "life":
         return life
     elif system == "comms":
@@ -177,9 +185,9 @@ def setSystemsPercent(system: str, newPercent: int):
     global runningSystems, life, comms, shields, hydro
 
     # Update the currently running systems
-    if newPercent == 100:
+    if runningSystems.count(system) == 0 & newPercent == 100:
         runningSystems.append(system)
-    elif newPercent == 0:
+    elif runningSystems.count(system) == 1 & newPercent == 0:
         runningSystems.remove(system)
 
     if system == "life":
@@ -190,3 +198,28 @@ def setSystemsPercent(system: str, newPercent: int):
         shields = newPercent
     elif system == "hydro":
         hydro = newPercent
+
+    updateFile()
+
+
+def updateFile():
+    with open('systems.csv', 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(["life", "comms", "shields", "hydro"])
+        writer.writerow([life, comms, shields, hydro])
+
+
+
+def readFromFile():
+    global life, comms, shields, hydro
+    if os.path.isfile('systems.csv'): 
+        with open('systems.csv', 'r') as file:
+            reader = csv.reader(file)
+            # Header
+            header = next(reader)
+            # First (and only) line
+            row = next(reader)
+            life = int(row[0])
+            comms = int(row[1])
+            shields = int(row[2])
+            hydro = int(row[3])
