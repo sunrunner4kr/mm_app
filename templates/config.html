@@ -18,8 +18,14 @@
     </div>
     <form action="#" method="post">
       <div class="row config-row mb-4">
+      {% if is_running == False %}
       <div class="col-3"><button type="submit" value="start" name="start" id="start" class="btn btn-dark w-100 h-100">Start</button></div>
+      <div class="col-3"><button type="submit" value="restart" name="restart" id="restart" class="btn btn-dark w-100 h-100">Restart</button></div>
+      {% else %}
+      
+      <div class="col-3"><button type="submit" value="pause" name="pause" id="pause" class="btn btn-dark w-100 h-100">Pause</button></div>
       <div class="col-3"><button type="submit" value="stop" name="stop" id="stop" class="btn btn-dark w-100 h-100">Stop</button></div>
+      {% endif %}
       <div class="col-3" ><button style="color:aquamarine; font-size:2.4em" type="button" class="btn w-100 h-100">{{counter}}</button></div>
 
     </div>

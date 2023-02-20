@@ -15,6 +15,7 @@ import os.path
 
 index_blueprint = Blueprint("index", __name__)
 
+is_running: bool = False
 counter: int = 0
 life: int = 100
 comms: int = 100
@@ -46,9 +47,10 @@ def display(msg):
 class RepeatTimer(Timer):
     def run(self):
         while not self.finished.wait(self.interval):
-            self.function(*self.args, **self.kwargs)
-            print(" ")
-            processTimer()
+            if is_running:
+                self.function(*self.args, **self.kwargs)
+                print(" ")
+                processTimer()
             # How often it runs is set here
             # time.sleep(interval * 60)
             # use the above for the final scenario, using below for dev
@@ -72,7 +74,8 @@ t.daemon = True
 
 
 def startTimer(t):
-    global counter
+    global is_running, counter
+    is_running = True
     counter = 0
     # t = RepeatTimer(1, display, ["repeating.."])
     # t.daemon = True
@@ -110,12 +113,23 @@ def dashboard():
 
 @index_blueprint.route("/config", methods=["GET", "POST"])
 def config():
-    global life, comms, shields, hydro
+    global is_running, counter, life, comms, shields, hydro
     if request.method == "POST":
+        # Start fresh
         if "start" in request.form:
-            readFromFile()
+            is_running = True
+            counter = 0
             startTimer(t)
+        # Start with loaded in values
+        elif "restart" in request.form:
+            readFromFile()
+            is_running = True
+        # Stop without killing thread
+        elif "pause" in request.form:
+            is_running = False
+        # Stop with killing thread
         elif "stop" in request.form:
+            is_running = False
             t.cancel()
 
         elif "decrement" in request.form:
@@ -132,6 +146,7 @@ def config():
         return render_template(
             "config.html",
             page="config",
+            is_running=is_running,
             life=life,
             comms=comms,
             shields=shields,
@@ -205,13 +220,13 @@ def setSystemsPercent(system: str, newPercent: int):
 def updateFile():
     with open('systems.csv', 'w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(["life", "comms", "shields", "hydro"])
-        writer.writerow([life, comms, shields, hydro])
+        writer.writerow(["counter", "life", "comms", "shields", "hydro"])
+        writer.writerow([counter, life, comms, shields, hydro])
 
 
 
 def readFromFile():
-    global life, comms, shields, hydro
+    global counter, life, comms, shields, hydro
     if os.path.isfile('systems.csv'): 
         with open('systems.csv', 'r') as file:
             reader = csv.reader(file)
@@ -219,7 +234,8 @@ def readFromFile():
             header = next(reader)
             # First (and only) line
             row = next(reader)
-            life = int(row[0])
-            comms = int(row[1])
-            shields = int(row[2])
-            hydro = int(row[3])
+            counter = int(row[0])
+            life = int(row[1])
+            comms = int(row[2])
+            shields = int(row[3])
+            hydro = int(row[4])
